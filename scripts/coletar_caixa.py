@@ -1,3 +1,4 @@
+
 import json
 import os
 import time
@@ -17,32 +18,96 @@ HEADERS = {
     "Referer": "https://loterias.caixa.gov.br/",
 }
 
+
 def fetch(session, url):
-    response = session.get(url, headers=HEADERS, timeout=100)
-    response.raise_for_status()
-    data = response.json()
-    if not isinstance(data, dict):
-        raise ValueError("A CAIXA retornou um formato inesperado.")
-    return data
+    for tentativa in range(1, 4):
+        try:
+            print(
+                f"Consultando CAIXA "
+                f"(tentativa {tentativa}/3): {url}"
+            )
+
+            response = session.get(
+                url,
+                headers=HEADERS,
+                timeout=(15, 100)
+            )
+
+            response.raise_for_status()
+
+            data = response.json()
+
+            if not isinstance(data, dict):
+                raise ValueError(
+                    "A CAIXA retornou um formato inesperado."
+                )
+
+            return data
+
+        except (
+            requests.Timeout,
+            requests.ConnectionError
+        ) as exc:
+
+            print(
+                f"Falha na tentativa {tentativa}: {exc}"
+            )
+
+            if tentativa == 3:
+                raise
+
+            espera = tentativa * 10
+
+            print(
+                f"Nova tentativa em {espera} segundos..."
+            )
+
+            time.sleep(espera)
+
 
 def normalize(data):
     numero = int(data.get("numero") or 0)
-    raw_date = str(data.get("dataApuracao") or "")
-    try:
-        date_obj = datetime.strptime(raw_date, "%d/%m/%Y")
-    except ValueError as exc:
-        raise ValueError(f"Data inválida no concurso {numero}: {raw_date}") from exc
 
-    bilhetes = data.get("listaDezenas") or data.get("dezenasSorteadasOrdemSorteio") or []
+    raw_date = str(data.get("dataApuracao") or "")
+
+    try:
+        date_obj = datetime.strptime(
+            raw_date,
+            "%d/%m/%Y"
+        )
+    except ValueError as exc:
+        raise ValueError(
+            f"Data inválida no concurso {numero}: {raw_date}"
+        ) from exc
+
+    bilhetes = (
+        data.get("listaDezenas")
+        or data.get("dezenasSorteadasOrdemSorteio")
+        or []
+    )
+
     if numero <= 0 or len(bilhetes) < 5:
-        raise ValueError(f"Resultado incompleto no concurso {numero}.")
+        raise ValueError(
+            f"Resultado incompleto no concurso {numero}."
+        )
 
     prizes = []
-    for position, ticket in enumerate(bilhetes[:5], start=1):
+
+    for position, ticket in enumerate(
+        bilhetes[:5],
+        start=1
+    ):
         ticket = str(ticket).strip()
+
         if not ticket.isdigit() or len(ticket) not in (5, 6):
-            raise ValueError(f"Bilhete inválido no concurso {numero}: {ticket}")
-        prizes.append({"posicao": position, "bilhete": ticket.zfill(5)})
+            raise ValueError(
+                f"Bilhete inválido no concurso {numero}: {ticket}"
+            )
+
+        prizes.append({
+            "posicao": position,
+            "bilhete": ticket.zfill(5)
+        })
 
     return {
         "numero": numero,
@@ -52,38 +117,85 @@ def normalize(data):
         "fonte_url": f"{BASE_URL}/{numero}",
     }
 
+
 def main():
     session = requests.Session()
+
     latest = fetch(session, BASE_URL)
+
     latest_number = int(latest.get("numero") or 0)
+
     if latest_number <= 0:
-        raise RuntimeError("Não foi possível identificar o último concurso publicado.")
+        raise RuntimeError(
+            "Não foi possível identificar o último concurso publicado."
+        )
 
     contests = []
-    for number in range(latest_number, max(0, latest_number - QUANTIDADE), -1):
+
+    for number in range(
+        latest_number,
+        max(0, latest_number - QUANTIDADE),
+        -1
+    ):
         try:
-            raw = latest if number == latest_number else fetch(session, f"{BASE_URL}/{number}")
+            raw = (
+                latest
+                if number == latest_number
+                else fetch(session, f"{BASE_URL}/{number}")
+            )
+
             contests.append(normalize(raw))
+
         except requests.HTTPError as exc:
-            # Concurso ausente/indisponível não deve ser inventado nem substituído.
-            print(f"Aviso: concurso {number} indisponível: {exc}")
+            # Concurso ausente/indisponível não deve ser inventado.
+            print(
+                f"Aviso: concurso {number} indisponível: {exc}"
+            )
+
         if number != latest_number:
             time.sleep(1.0)
 
     if not contests:
-        raise RuntimeError("Nenhum concurso válido foi coletado.")
-    contests.sort(key=lambda item: item["numero"], reverse=True)
+        raise RuntimeError(
+            "Nenhum concurso válido foi coletado."
+        )
+
+    contests.sort(
+        key=lambda item: item["numero"],
+        reverse=True
+    )
 
     payload = {
         "fonte": "CAIXA Econômica Federal",
-        "url_fonte": "https://loterias.caixa.gov.br/Paginas/Federal.aspx",
-        "atualizado_em": datetime.now(timezone.utc).isoformat(),
+        "url_fonte": (
+            "https://loterias.caixa.gov.br/Paginas/Federal.aspx"
+        ),
+        "atualizado_em": datetime.now(
+            timezone.utc
+        ).isoformat(),
         "quantidade": len(contests),
         "concursos": contests,
     }
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Arquivo atualizado: {len(contests)} concursos; último #{contests[0]['numero']}.")
+
+    OUTPUT.parent.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    OUTPUT.write_text(
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            indent=2
+        ) + "\n",
+        encoding="utf-8"
+    )
+
+    print(
+        f"Arquivo atualizado: {len(contests)} concursos; "
+        f"último #{contests[0]['numero']}."
+    )
+
 
 if __name__ == "__main__":
     main()
