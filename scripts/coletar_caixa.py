@@ -18,7 +18,7 @@ HEADERS = {
 }
 
 def fetch(session, url):
-    response = session.get(url, headers=HEADERS, timeout=30)
+    response = session.get(url, headers=HEADERS, timeout=100)
     response.raise_for_status()
     data = response.json()
     if not isinstance(data, dict):
