@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d18">
+  <meta name="description" content="Painel estatístico independente da Loteria Federal.">
+  <title>Federal Intelligence</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">FI</div>
+        <div><strong>FEDERAL <span>INTELLIGENCE</span></strong><small>Central de análise estatística</small></div>
+      </div>
+      <div class="top-actions">
+        <span class="live-dot" id="liveDot"></span>
+        <span id="connectionLabel">Preparando painel...</span>
+        <button id="refreshBtn" class="ghost">↻ Atualizar</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">PAINEL DE INTELIGÊNCIA</p>
+          <h1>Dados primeiro.<br><em>Análise depois.</em></h1>
+          <p class="hero-copy">Acompanhe os resultados oficiais da Loteria Federal, observe frequências e consulte os últimos concursos. A análise descreve o histórico; não prevê sorteios.</p>
+        </div>
+        <div class="hero-stat">
+          <small>JANELA DE ANÁLISE</small><strong id="windowCount">0/15</strong><span>concursos analisados</span>
+        </div>
+      </section>
+
+      <section class="status-grid">
+        <article class="metric"><small>ÚLTIMO CONCURSO</small><strong id="lastContest">—</strong><span id="lastDate">Aguardando dados</span></article>
+        <article class="metric"><small>BILHETES ANALISADOS</small><strong id="ticketCount">0</strong><span>cinco prêmios por concurso</span></article>
+        <article class="metric"><small>ÚLTIMA ATUALIZAÇÃO</small><strong id="lastSync">—</strong><span id="syncStatus">Sem dados locais</span></article>
+      </section>
+
+      <section class="section-head">
+        <div><p class="eyebrow">MOTOR ESTATÍSTICO</p><h2>O que os dados mostram</h2></div>
+        <span class="pill">Últimos 15 concursos</span>
+      </section>
+
+      <section class="analysis-grid">
+        <article class="panel">
+          <div class="panel-head"><div><small>01 / DEZENAS</small><h3>Terminações</h3></div><span class="unit">00–99</span></div>
+          <p class="muted">Dois últimos algarismos dos cinco prêmios.</p>
+          <div id="terminacoes" class="rank-list empty">Aguardando resultados...</div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><div><small>02 / CENTENAS</small><h3>Centenas</h3></div><span class="unit">000–999</span></div>
+          <p class="muted">Três últimos algarismos dos cinco prêmios.</p>
+          <div id="centenas" class="rank-list empty">Aguardando resultados...</div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><div><small>03 / MILHARES</small><h3>Milhares</h3></div><span class="unit">0000–9999</span></div>
+          <p class="muted">Quatro últimos algarismos dos cinco prêmios.</p>
+          <div id="milhares" class="rank-list empty">Aguardando resultados...</div>
+        </article>
+      </section>
+
+      <section class="section-head">
+        <div><p class="eyebrow">BASE DE DADOS</p><h2>Concursos recentes</h2></div>
+        <span class="muted">Cinco prêmios principais por concurso</span>
+      </section>
+      <section class="panel table-panel">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Concurso</th><th>Data</th><th>1º prêmio</th><th>2º prêmio</th><th>3º prêmio</th><th>4º prêmio</th><th>5º prêmio</th></tr></thead>
+            <tbody id="resultsBody"><tr><td colspan="7" class="empty-cell">Carregando dados...</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="source-note panel">
+        <div><p class="eyebrow">ORIGEM E FUNCIONAMENTO</p><h3>Dados oficiais, cópia local</h3>
+          <p class="muted">A automação consulta a fonte da CAIXA e publica um arquivo de dados no repositório. Este aparelho mantém uma cópia local para consultas quando estiver sem internet.</p>
+          <a href="https://loterias.caixa.gov.br/Paginas/Federal.aspx" target="_blank" rel="noopener">Consultar a Loteria Federal na CAIXA ↗</a>
+        </div>
+        <div class="source-meta"><span>Fonte</span><strong>CAIXA</strong><span>Armazenamento</span><strong>IndexedDB local</strong><span>Backend externo</span><strong>Nenhum</strong></div>
+      </section>
+
+      <footer><span>FEDERAL INTELLIGENCE · INDEPENDENTE</span><span>Frequência histórica não é previsão de sorteio.</span></footer>
+    </main>
+  </div>
+</body>
+</html>

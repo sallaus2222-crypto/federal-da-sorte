@@ -1,0 +1,9 @@
+{
+  "name": "Federal Intelligence",
+  "short_name": "Federal FI",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#080d18",
+  "theme_color": "#080d18",
+  "description": "Painel estatístico da Loteria Federal"
+}
