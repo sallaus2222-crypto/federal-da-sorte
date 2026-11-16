@@ -1,7 +1,7 @@
 {
   "fonte": "CAIXA Econômica Federal",
   "url_fonte": "https://loterias.caixa.gov.br/Paginas/Federal.aspx",
-  "atualizado_em": "2026-11-15T20:40:38.514210+00:00",
+  "atualizado_em": "2026-11-16T00:00:33.715491+00:00",
   "quantidade": 14,
   "concursos": [
     {
@@ -31,34 +31,6 @@
       ],
       "fonte": "CAIXA",
       "fonte_url": "https://servicebus2.caixa.gov.br/portaldeloterias/api/federal/6117"
-    },
-    {
-      "numero": 6116,
-      "data_concurso": "2026-11-08",
-      "premios": [
-        {
-          "posicao": 1,
-          "bilhete": "068911"
-        },
-        {
-          "posicao": 2,
-          "bilhete": "085444"
-        },
-        {
-          "posicao": 3,
-          "bilhete": "034785"
-        },
-        {
-          "posicao": 4,
-          "bilhete": "054803"
-        },
-        {
-          "posicao": 5,
-          "bilhete": "086716"
-        }
-      ],
-      "fonte": "CAIXA",
-      "fonte_url": "https://servicebus2.caixa.gov.br/portaldeloterias/api/federal/6116"
     },
     {
       "numero": 6115,
@@ -395,6 +367,34 @@
       ],
       "fonte": "CAIXA",
       "fonte_url": "https://servicebus2.caixa.gov.br/portaldeloterias/api/federal/6104"
+    },
+    {
+      "numero": 6103,
+      "data_concurso": "2026-09-23",
+      "premios": [
+        {
+          "posicao": 1,
+          "bilhete": "040292"
+        },
+        {
+          "posicao": 2,
+          "bilhete": "053081"
+        },
+        {
+          "posicao": 3,
+          "bilhete": "065578"
+        },
+        {
+          "posicao": 4,
+          "bilhete": "042304"
+        },
+        {
+          "posicao": 5,
+          "bilhete": "065837"
+        }
+      ],
+      "fonte": "CAIXA",
+      "fonte_url": "https://servicebus2.caixa.gov.br/portaldeloterias/api/federal/6103"
     }
   ]
 }
